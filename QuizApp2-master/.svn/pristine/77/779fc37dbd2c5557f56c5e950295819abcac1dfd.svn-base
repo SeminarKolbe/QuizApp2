@@ -1,0 +1,75 @@
+<%@page import="java.util.List"%>
+<%@page import="java.util.ArrayList"%>
+<%@page import="java.sql.ResultSet"%>
+<%@page import="java.sql.Statement"%>
+<%@page import="java.sql.DriverManager"%>
+<%@page import="java.sql.Connection"%>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css" />
+        <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+        <script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+        <title>Kategorieauswahl</title>
+        <link rel="stylesheet" href="stylesheet.css" type="text/css"/>
+    </head>
+    <body>
+        
+        <%! public List<String> kategorie(){
+             final String JDBC_TREIBER = "com.mysql.jdbc.Driver";
+             final String JDBC_URL = "jdbc:mysql://127.0.0.1:3307/mob164db";
+             final String JDBC_USER = "mob164";      // Hier Wert eintragen!
+             final String JDBC_PASSWORD = "S!ya0V8scj";  // Hier Wert eintragen! // Hier Wert eintragen!
+             Connection con= null;
+           
+             List<String> help =new ArrayList<>();
+             try{
+                System.out.println("Bin in category.jsp");
+                Class.forName(JDBC_TREIBER);
+                con = DriverManager.getConnection(JDBC_URL, JDBC_USER, JDBC_PASSWORD); 
+                Statement stmt =con.createStatement();
+                ResultSet rs = stmt.executeQuery("SELECT * FROM thema WHERE aktiv = '1';");
+                while(rs.next())
+                    help.add(" <a href=\"ControllerCategory?category="+rs.getInt(1)+"\">"+rs.getString(2)+"</a>");
+                con.close();
+             }catch(Exception e){
+                 System.out.println(e);
+                 System.out.println("Bin in der Exception");
+             }
+             return help;
+            }
+        %>
+        
+        
+        
+        
+        
+        <% List<String> kategorie;
+            %>
+        <div data-role="page">
+            <div data-role="header" data-theme="a" id="header"><h1>Name der App</h1></div>
+            <h1>Hallo ${userName} und viel Erfolg beim Lernen!</h1>
+
+            <!--Falls Kategorie ungültig oder falsch gewählt folgt eine Fehlermeldung -->
+            <h2><font color="red">${errorMessage}</font></h2>
+            <!-------------------------------->
+       
+            <p>Wähle eine Kategorie</p>
+
+            <div id="kategorieauswahl">
+                   <% kategorie= kategorie();
+                       for(int i=0;i<kategorie.size();i++){
+                           out.print(kategorie.get(i));
+                       }
+                   %> 
+            </div>
+            <form action="login.jsp" method="post">
+          <button>log-out</button> 
+            </form>
+            
+            <div data-role="footer" data-theme="a" id="footer"><h1></h1></div>
+        </div>
+    </body>
+</html>

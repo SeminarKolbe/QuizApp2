@@ -1,0 +1,49 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package de.projekt.model;
+
+/**
+ *
+ * @author Shaun
+ */
+public class Karteikarte {
+    
+    private String thema;
+    private Frage frage;        
+    public Karteikarte(){
+    }
+    
+    public Karteikarte(String thema){
+        this.thema=thema;
+        generateCards(thema);
+    }
+    
+    public String getThema(){
+        return this.thema;
+    }
+    
+    
+    
+    public void generateCards(String thema){
+        if(thema== "Mathe"|| thema=="mathe"){
+          this.frage= new Frage();
+        
+        }    
+    }
+    public String checkQuestion(){
+        return frage.question;   
+    }
+    
+    public String checkAnswer(){
+        return frage.answer;   
+    }
+    
+    
+    
+}
+
+    
+

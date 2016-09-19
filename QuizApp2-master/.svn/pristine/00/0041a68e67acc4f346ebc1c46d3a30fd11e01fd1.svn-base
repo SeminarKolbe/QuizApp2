@@ -1,0 +1,61 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package de.projekt.model;
+
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+/**
+ *
+ * @author Shaun
+ */
+public class Karteikarte extends DatenbankZugang {
+    private String thema;
+    private Frage frage;  
+    private List<Frage> set =new ArrayList<Frage>(); 
+    private int j =0;      
+    private Iterator<Frage> iterator;
+    
+    public Karteikarte(){
+    }
+    
+   
+    public void getFrage(String thema){
+        
+        try{
+           
+            connect();     
+            Statement stmt= con.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT * FROM karten WHERE thema = '"+thema+"';");
+            //Alle Fragen die aus dem Themenberreich Mathe sind, werden an das ResultSet zurückgegeben    
+            while(rs.next()){  
+                System.out.println("Frage wird erzeugt und der liste angehanegn");
+                this.set.add(j,new Frage(rs.getString(3),rs.getString(4)));
+                j++;
+            } 
+             //Ausgabe der Elemente in der Liste
+            iterator= set.iterator();
+          
+            
+        }catch(Exception e){
+           System.out.println(e);
+        }
+    }
+        public String getAnswer(int i){
+           return set.get(i).getAnswer();
+        }
+       
+        public String getQuestion(int i){
+             return set.get(i).getQuestion();
+        }
+        
+       
+            
+    
+ }
