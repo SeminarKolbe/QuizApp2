@@ -1,0 +1,39 @@
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+/**
+ *
+ * @author Jonas
+ */
+public class bfbbf {
+    ResultSet rs;
+    public Statement stmt;    
+    final String JDBC_TREIBER = "com.mysql.jdbc.Driver";
+    final String JDBC_URL = "jdbc:mysql://127.0.0.1:3306/mob164db";
+    final String JDBC_USER = "mob164";      // Hier Wert eintragen!
+    final String JDBC_PASSWORD = "S!ya0V8scj";  // Hier Wert eintragen!
+    public Connection con = null;
+    
+    
+    
+    
+    public void connect() throws ClassNotFoundException, SQLException {
+        Class.forName(JDBC_TREIBER);
+        con = DriverManager.getConnection(JDBC_URL, JDBC_USER, JDBC_PASSWORD);
+        stmt = con.createStatement();
+        rs= stmt.executeQuery("select * from benutzer");
+        while(rs.next()){
+         System.out.println(rs.getString(1));
+        }   
+        }
+}

@@ -1,0 +1,102 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package de.projekt.model;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import javax.servlet.http.HttpSession;
+
+/**
+ *
+ * @author Jonas
+ */
+public class Multi extends DatenbankZugang{
+    private Player player;
+    private String usernameGegner;
+    private int idgegner;
+    public Multi(Player player){
+        this.player=player;
+    }
+    
+    public int[] getGame(int id) throws ClassNotFoundException, SQLException, Exception{
+        int allidnutzer=0; // gibt die gesamtzahl der Nutzer an
+        
+        connect();
+ //__________ Falls ein Random-Player gespielt wird __________________      
+        // -1 es wurde ein randomplayer ausgesucht. 
+        if(id==-1){
+            Statement stmt3= con.createStatement();
+            ResultSet rs3 = stmt3.executeQuery("SELECT * FROM benutzer");
+            while(rs3.next()){
+                allidnutzer++;
+            }
+            id=(int) (allidnutzer*Math.random());
+            while(id==0){
+               id=(int) (allidnutzer*Math.random()); // Damit keiner gegen den Admin spielt 
+            }
+        }
+        this.idgegner=id;
+//___________ Es wird ein Kartenset zusammengestellt_____________________        
+        System.out.println("ES gibt insgesamt: "+allidnutzer);
+        int allcards=0;
+        String set="";
+        
+        Statement stmt2= con.createStatement();
+        //ResultSet rs = stmt.executeQuery("INSERT INTO benutzer (match_id) VALUES("+id+")"); 
+        
+        ResultSet rs2 = stmt2.executeQuery("SELECT * FROM karten");
+        while(rs2.next())
+                allcards++;
+        int[] numbercards =new int[10];
+        int help= (int) (allcards*Math.random());
+        for(int i=0;i<10;i++){
+            while(onSet(numbercards, help)) // Fals die Karte schon im Set enthalten ist true
+                help= (int) (allcards*Math.random()); // suche neue Karte
+            numbercards[i]=help;
+            set=set+help+"-";
+            
+        }    
+         System.out.println("Das Kartenset ist: "+set);     
+         set= (String) set;
+//__________________Einfügen der Daten in die Datenbank____________________
+            
+            Statement stmt= con.createStatement();
+            stmt.executeUpdate("INSERT INTO multi (player1, player2, cardset) VALUES("+player.getId()+","+id+",'"+set+"')");
+ 
+            close();
+//_____ Ausgabe für den jetzigen Spieler_________________________
+        return numbercards;
+
+    }
+    
+ 
+    
+     public boolean onSet(int [] numbercards, int id) throws Exception{
+         for(int i=0;i<10;i++){  
+            if(numbercards[i]==id){
+                return true;
+            }
+         }
+        return false;  
+    }
+    /*liefert den Namen des Spielers zurück, gegen den du spielst*/ 
+    public String getUsername() throws SQLException, ClassNotFoundException{
+        String h="random";
+        connect();
+        Statement stmt= con.createStatement();
+        ResultSet rs = stmt.executeQuery("SELECT name FROM benutzer WHERE id_benutzer="+idgegner+"");
+        if(rs.next()){
+            h= rs.getString(1);
+        }            
+        return h;
+    }
+    
+    
+}

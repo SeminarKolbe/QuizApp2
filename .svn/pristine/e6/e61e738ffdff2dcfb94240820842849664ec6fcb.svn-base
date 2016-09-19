@@ -1,0 +1,82 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package de.projekt.model;
+
+import java.io.File;
+import java.io.IOException;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
+
+/**
+ *
+ * @author René
+ */
+public class XMLparser extends DatenbankZugang {
+    
+    public int laenge;
+    String[][] qst_ans;  
+    
+    public void parsing()throws ParserConfigurationException, SAXException, IOException{
+        
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder builder = factory.newDocumentBuilder();
+        Document document = builder.parse(new File("fragen.xml"));       
+        NodeList flowList = document.getElementsByTagName("flow");    
+
+        for(int i=0; i<flowList.getLength(); i++){
+  
+            Node node = flowList.item(i);                
+            String qst = node.getFirstChild().getNextSibling().getTextContent(); 
+            qst_ans[i][0] = qst;                                          // Frage als String in array Speichern.      
+        }
+        
+        NodeList renderList = document.getElementsByTagName("render_choice");
+        //System.out.println("Länge von render choice: "+renderList.getLength());
+        
+        for(int i=0; i<renderList.getLength(); i++){
+            
+            NodeList respL = renderList.item(i).getChildNodes();  
+            System.out.println("Laenger der List resp (Soll 4) : "+respL.getLength());  // WIESO IST DIE SCHEISS LISTE SO LANG?????
+            
+            int var=1;
+            for(int j=0; j<respL.getLength(); j++){
+                
+                if(j%2 != 0){
+                    
+                    String ans = respL.item(j).getTextContent();
+                    //System.out.println("Antwort "+(var)+" : "+ans);
+                    qst_ans[i][var] = ans;
+                    var++;
+                }
+            } 
+        }
+        
+       
+    
+    }
+    
+     public void insertQst_Ans()throws ClassNotFoundException, SQLException{
+     
+         connect();
+         Statement stmt= con.createStatement();
+         ResultSet rs = stmt.executeQuery("INSERT ...... "); // TBA
+         
+         close();
+     }
+            
+    
+    
+    
+    
+}

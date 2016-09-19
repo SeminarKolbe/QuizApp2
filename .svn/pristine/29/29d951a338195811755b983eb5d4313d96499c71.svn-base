@@ -1,0 +1,40 @@
+<%-- 
+    Document   : MultiAuswahl
+    Created on : 03.07.2016, 18:21:46
+    Author     : Jonas
+--%>
+
+<%@page import="java.util.List"%>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>JSP Page</title>
+    </head>
+    <body>
+        <h1>Wähle aus ob du gegen einen Freund oder einen Zufälligen Spieler spielst</h1>
+        
+        <%
+            List<String> namen = (List<String>)request.getAttribute("name"); 
+            int i=1;
+        %>
+        <form action="VerarbeitungsControllerMulti" method="post">
+                    <label>Spieler(in):</label>
+                     <select name="top5" size="1">
+         
+         <% for(String q : namen){
+            out.println("<option value=\"1\">"+q+"</option>");
+            i++;
+         }
+         %>                      
+                    </select>
+                    <button>click</button>  
+           </form>         
+                    <form action="VerarbeitungsControllerMulti?id=r" method="post">
+                     <button>Zufälliger Spieler</button>
+                    </form>
+          
+          
+    </body>
+</html>

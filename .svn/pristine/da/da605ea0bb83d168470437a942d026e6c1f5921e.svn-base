@@ -1,0 +1,291 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package de.projekt.controller;
+
+import de.projekt.model.AntwortenUebergabe;
+import de.projekt.model.Frage;
+import de.projekt.model.Karteikarte;
+import de.projekt.model.Multi;
+import de.projekt.model.MultiPlayerKarten;
+import de.projekt.model.Player;
+import de.projekt.model.ResultBerechnenMulti;
+import de.projekt.model.Werte;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.sql.SQLException;
+import java.util.List;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+/**
+ *
+ * @author Jonas
+ */
+@WebServlet(name = "VerarbeitungsControllerMulti", urlPatterns = {"/VerarbeitungsControllerMulti"})
+public class VerarbeitungsControllerMulti extends HttpServlet implements Werte {
+public static int i=0;
+public Frage frage;
+public List<Frage> set;
+String namegegner;
+String answercheck="0";
+String[] userantworten;
+public int wrong=0;
+public int right=0;
+public int[] numbercards; // Int-Array mit den Id's der Karten die gespielt werden;
+public int cardsetid; // id des Cardsets welches gesoielt wird 
+public int spielerzug=0; // Wenn spielerzug 1 ist, ist der zweite Spieler am Zug. Variable wird nur im ersten Schritt verändert
+/**
+     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
+     * methods.
+     *
+     * @param request servlet request
+     * @param response servlet response
+     * @throws ServletException if a servlet-specific error occurs
+     * @throws IOException if an I/O error occurs
+     */
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException, ClassNotFoundException, SQLException {
+        HttpSession session = request.getSession();
+      
+   //___________Anfrage eines anderen Spielers verarebeiten     
+        try{
+         String [] help =request.getParameterValues("top5");
+         String anfrage=help[0];  // ist die Id des Cardsets welches gepielt wird
+         cardsetid=Integer.parseInt(anfrage);
+         
+         for(int w=0;w<help.length;w++){
+            System.out.println(help[w]);
+         }
+          Multi g =new Multi((Player) session.getAttribute("player"));
+          namegegner = g.getNamePlayer1(cardsetid);
+          numbercards=g.getCardSet(anfrage);    // gibt einen int-Array mit den Karten-ids aus
+          MultiPlayerKarten mult =new MultiPlayerKarten();
+          set=mult.generateGame(numbercards); // erzeugt ein Set aus Fragen
+          spielerzug=1;
+          i=2;
+           
+       }catch(Exception e){
+           System.out.println("Ich probierte eine Anfrage von einem Gegner zu starten");
+           System.out.println(e);
+       }
+        
+        
+    //____________________    
+        
+        
+        try{ System.out.println("Bin am Anfang der Methode");
+       
+       
+       
+       //___Falls der Spieler die Kategorie gewählt hat, soll ihm alle Spieler angezeigt werden
+       
+       if(i==0){
+            System.out.println("Bin am Anfang der Methode/ Bin bei if 0");
+            System.out.println("Lade das Multi objekt");
+             Multi m =new Multi((Player) session.getAttribute("player"));
+                List<String> namen= m.getUser();
+                i++;
+                request.setAttribute("name", namen);
+                request.getRequestDispatcher("/WEB-INF/views/MultiAuswahl.jsp").forward(request, response);
+            
+        }
+        System.out.println("Bin am Anfang der Methode2");
+        //_____Hier wird der Benutzer überprüft und Karten erzeugt
+        if(i==1){
+            
+            System.out.println("Bin in der zweiten if()");
+            
+            int id=-2;   
+            String help= request.getParameter("id");
+            if(help.equals("r"))
+                id=-1;
+            System.out.println("ID des Benutzers : "+id);
+            Multi n =new Multi((Player) session.getAttribute("player"));
+            numbercards= n.getGame(id);      
+            
+            
+            
+            MultiPlayerKarten mult =new MultiPlayerKarten();
+            set=mult.generateGame(numbercards);
+            namegegner=n.getUsername();
+            System.out.println("Bind Jude");
+            i++;
+ //______Hier folgt die Ausgabe ___    
+        }if(i>1){
+            System.out.println("i>2");
+            if(i>2){
+                
+                answercheck= (String)request.getParameter("res");
+                userantworten= request.getParameterValues("antwort");
+                
+               
+                for(String q :userantworten)
+                    System.out.println("Das ist die userantwort: "+q);
+            }    
+            System.out.println("Bind hier");
+            System.out.println(answercheck+ "   fuck the police");
+            if(answercheck.equals("1")){  // Das Servlet soll gucken ob die Antworten richtig sind und dme Benutzer die JSP zurückliefern, ohne eine neue Frage
+                System.out.println("BHUHU");
+                frage=set.get(i-3);
+                //___überprüfen ob die Antwort richtig ist
+                
+                
+                
+                request.setAttribute("namegegner", namegegner);
+                request.setAttribute("frage",frage.getQuestion());
+                request.setAttribute("antwor1", frage.getAnswer1());
+                request.setAttribute("antwor2", frage.getAnswer2());
+                request.setAttribute("antwor3", frage.getAnswer3());
+                request.setAttribute("antwor4", frage.getAnswer4());
+                request.setAttribute("antwor5", frage.getAnswer5());
+                request.setAttribute("correct1", Integer.toString(frage.getCorrectanswer()));
+                request.setAttribute("correct2", Integer.toString(frage.getCorrectanswer2()));
+                request.setAttribute("correct3", Integer.toString(frage.getCorrectanswer3()));
+                request.setAttribute("correct4", Integer.toString(frage.getCorrectanswer4()));
+                request.setAttribute("correct5", Integer.toString(frage.getCorrectanswer5()));
+                int f;
+                int [] santworten =new int[userantworten.length];  // Die Antworten die der Nutzer gegeben hat, werden Sortiert und ausgegeben
+               
+                System.out.println("Das ist correct5/ falls keine antwort: "+frage.getCorrectanswer5());
+                for(f=0;f<userantworten.length;f++){
+                    if(userantworten[f].equals("a1")){
+                        santworten[f]=1;
+                    }if(userantworten[f].equals("a2")){
+                        santworten[f]=2;
+                    }if(userantworten[f].equals("a3")){
+                        santworten[f]=3;
+                    }if(userantworten[f].equals("a4")){
+                        santworten[f]=4;
+                    }if(userantworten[f].equals("a5")){
+                        santworten[f]=5;
+                    }
+                }
+                ResultBerechnenMulti result = new ResultBerechnenMulti(santworten, frage.getCorrectanswer(), frage.getCorrectanswer2(), frage.getCorrectanswer3(), frage.getCorrectanswer4(), frage.getCorrectanswer5());
+                if(result.WrongRight()==true){
+                    right++;
+                    System.out.println("Antwort wurde richtig gemacht");
+                }else{
+                    System.out.println("Antwort wurde falsch gemacht");
+                    wrong++;
+                }    
+                
+                for( f=0;f<userantworten.length;f++){
+                    System.out.println("Die abgegebene Antwort ist: "+santworten[f]);
+                }
+                AntwortenUebergabe hilfe = new AntwortenUebergabe(santworten);
+                request.setAttribute("santworten",hilfe);
+                request.setAttribute("abgegeben", Integer.toString(f));
+                request.setAttribute("checkanswer", "1");
+                
+                request.getRequestDispatcher("/WEB-INF/views/AusgabeMultiplayer.jsp").forward(request, response);    
+                return;
+       //______Letzter Schritt vor der Ausgabe des Endergebnisses 
+            }if(i==anzahlmulticards+2){
+                  System.out.println("AUF ZUM ENDERGEBNIS");
+                  
+                  request.setAttribute("right",right);
+                  request.setAttribute("wrong",wrong); 
+                  Multi resultabfrage =new Multi((Player) session.getAttribute("player"));
+                  if(spielerzug==1){
+                       resultabfrage.getResult2(cardsetid, right, wrong);        //updatet die Datenbank und legt das Ergebnis des Spielers ab
+                       request.setAttribute("rightplayer1",resultabfrage.getRightPlayer1(cardsetid));
+                       request.setAttribute("wrongplayer1",resultabfrage.getWrongePlayer1(cardsetid));
+                       request.setAttribute("multiausgabe","multi");
+                       request.setAttribute("gegnername",namegegner);
+                  }else{
+                      resultabfrage.getResult1(resultabfrage.getGameId(), right, wrong);
+                      request.setAttribute("multiausgabe","einzel");
+                  }
+                   
+                  request.getRequestDispatcher("/WEB-INF/views/EndResult.jsp").forward(request, response);  
+                  return;
+            }
+            
+       //______________________________________________     
+            System.out.println("Bin vor dem Frage set/ i st gl");
+            frage=set.get(i-2);
+            System.out.println("Bin nacj dem Frage set");
+            request.setAttribute("namegegner", namegegner);
+            request.setAttribute("frage",frage.getQuestion());
+            request.setAttribute("antwor1", frage.getAnswer1());
+            request.setAttribute("antwor2", frage.getAnswer2());
+            request.setAttribute("antwor3", frage.getAnswer3());
+            request.setAttribute("antwor4", frage.getAnswer4());
+            request.setAttribute("antwor5", frage.getAnswer5());
+            request.setAttribute("checkanswer", "0");  
+          
+            if(!answercheck.equals("1")){
+                i++;
+                System.out.println("Bind mit dem Schritt fertig/ i ist : "+i);
+                request.getRequestDispatcher("/WEB-INF/views/AusgabeMultiplayer.jsp").forward(request, response);
+                return;
+            }
+        }
+            }catch(Exception e){
+                System.out.println(e);
+            }   
+             
+           System.out.println("Bin nirgends");
+           
+        
+    }
+
+   
+        
+     
+    
+    
+    
+   
+    
+    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
+    /**
+     * Handles the HTTP <code>GET</code> method.
+     *
+     * @param request servlet request
+     * @param response servlet response
+     * @throws ServletException if a servlet-specific error occurs
+     * @throws IOException if an I/O error occurs
+     */
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        try{
+        processRequest(request, response);
+        }catch(Exception e){}
+        }
+
+    /**
+     * Handles the HTTP <code>POST</code> method.
+     *
+     * @param request servlet request
+     * @param response servlet response
+     * @throws ServletException if a servlet-specific error occurs
+     * @throws IOException if an I/O error occurs
+     */
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+         try{
+        processRequest(request, response);
+        }catch(Exception e){}
+    }
+
+    /**
+     * Returns a short description of the servlet.
+     *
+     * @return a String containing servlet description
+     */
+    @Override
+    public String getServletInfo() {
+        return "Short description";
+    }// </editor-fold>
+
+}

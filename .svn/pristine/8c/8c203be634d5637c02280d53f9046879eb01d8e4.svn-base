@@ -1,0 +1,31 @@
+<%-- 
+    Document   : EndResult
+    Created on : 27.06.2016, 17:38:46
+    Author     : Jonas
+--%>
+
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>JSP Page</title>
+    </head>
+    <body>
+        
+        <% int wrong = (int)request.getAttribute("wrong");%>
+        <% int right = (int)request.getAttribute("right");%>
+        <h1>Dein Endergebnis</h1>
+        <p>
+        <%  int all =wrong+right;
+            out.println("Anzahl der Fragen: "+all+"<br>");
+            out.println("Richtig: "+right+"<br>");
+            out.println("Falsch: "+wrong+"<br>");
+          %> 
+        </p>
+        <form action="LoginControllerServlet?id=10" method="post">
+            <button>Zurück zum Menü</button>
+        </form>
+        
+    </body>
+</html>

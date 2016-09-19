@@ -1,0 +1,135 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package de.projekt.controller;
+
+import de.projekt.model.Karteikarte;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+/**
+ *
+ * @author Shaun
+ */
+@WebServlet(name = "ControllerCategory", urlPatterns = {"/ControllerCategory"})
+public class ControllerCategory extends HttpServlet {
+       public String thema=null;
+       final String JDBC_TREIBER = "com.mysql.jdbc.Driver";
+       final String JDBC_URL = "jdbc:mysql://127.0.0.1:3307/mob164db";
+       final String JDBC_USER = "mob164";      // Hier Wert eintragen!
+       final String JDBC_PASSWORD = "S!ya0V8scj";  // Hier Wert eintragen! // Hier Wert eintragen!
+       Connection con= null;
+    /**
+     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
+     * methods.
+     *
+     * @param request servlet request
+     * @param response servlet response
+     * @throws ServletException if a servlet-specific error occurs
+     * @throws IOException if an I/O error occurs
+     */
+       
+       
+        
+        //Karten werden erzeugt 
+        
+        
+
+    
+
+    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
+    /**
+     * Handles the HTTP <code>GET</code> method.
+     *
+     * @param request servlet request
+     * @param response servlet response
+     * @throws ServletException if a servlet-specific error occurs
+     * @throws IOException if an I/O error occurs
+     */
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        
+            
+        System.out.println("Bin im ControllerCategory/ do get");
+        
+        
+        if(thema == null){
+            System.out.println("ControllerCategory - thema wurde noch nicht ausgewähl");
+            System.out.println(thema);
+            int categoryId;
+            String strCategoryParameter = request.getParameter("category");
+                    try{
+                        categoryId = Integer.parseInt(strCategoryParameter);
+                        System.out.println("Die ID der Kategorie ist: "+categoryId);
+                        Class.forName(JDBC_TREIBER);
+                        con = DriverManager.getConnection(JDBC_URL, JDBC_USER, JDBC_PASSWORD);
+                        Statement stmt =con.createStatement();
+                        ResultSet rs = stmt.executeQuery("SELECT * FROM thema WHERE idthema='"+categoryId+"';");
+                        if(rs.next()){   
+                            thema=rs.getString(2);
+                            System.out.println(" Das ist das Thema in ControllerCategory: "+thema);
+                        }    
+                    }catch (Exception e){
+                        forwardToErrorView(request, response, "Es wurde keine gültige Kategorie ausgewählt!" +e);
+                         /* Und den Controller verlassen! */
+                        return;
+                    }
+        
+        /*Wenn die Kategorie erfolgreich gewählt wurde
+         *Weiterleitung zur Wahl des Spielmodus*/
+            request.getRequestDispatcher("/WEB-INF/views/Spielmodiwahl.jsp").forward(request, response);
+            
+      /*Wenn die Variable Thema nicht 0 ist, wurde schon eine Kategorie ausgewählt. Dann Soll noch bestimmt werden, ob es sich
+            um einen Single- oder multi-player handelt.
+       */
+    }else{
+            System.out.println("ControlloerCategory - Else Thema wurde ausgewähl"+ Integer.parseInt(request.getParameter("category")));
+            int categoryId = Integer.parseInt(request.getParameter("category"));
+            //single-Player 
+            if(categoryId==3){
+               request.setAttribute("uebergabe", thema);
+               request.getRequestDispatcher("VerarbeitungsControllerSingle").forward(request, response);
+            }else if(categoryId==2 || categoryId==0){
+                request.getRequestDispatcher("/WEB-INF/views/Spielmodiwahl.jsp").forward(request, response);
+            }    
+        }   
+
+        }
+        
+     
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+             System.out.println("Bin im ControllerCategory/ do post");
+    }
+
+    /**
+     * Returns a short description of the servlet.
+     *
+     * @return a String containing servlet description
+     */
+    @Override
+    public String getServletInfo() {
+        return "Short description";
+    }// </editor-fold>
+    
+    private void forwardToErrorView(HttpServletRequest request, HttpServletResponse response, String errorMessage) 
+            throws ServletException, IOException{
+        /* Fehlermeldung im Request-Scope hinterlegen, damit die View sie anzeigen kann: */
+		request.setAttribute("errorMessage", errorMessage);
+                request.getRequestDispatcher("/WEB-INF/views/category.jsp").forward(request, response);
+    } 
+
+}

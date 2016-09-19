@@ -1,0 +1,27 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package de.projekt.model;
+
+/**
+ *
+ * @author Shaun
+ */
+public class Frage {
+    public String question;
+    public String answer;
+    public String getQuestion() {
+        return question;
+    }
+
+    public String getAnswer() {
+        return answer;
+    }
+    
+    public Frage(String frage, String antwort){
+        this.question=frage;
+        this.answer=antwort;
+    }
+}
