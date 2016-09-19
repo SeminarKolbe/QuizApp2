@@ -65,10 +65,10 @@ public class LoginControllerServlet extends HttpServlet {
                     request.getRequestDispatcher("/WEB-INF/views/categoryAdmin.jsp").forward(request, response);
                     return;
              }else{
-                    Player player = new Player(userName); // in dem Player Obejkt werden alle Date gespeichert
+                    Player player = new Player(userName); // in Player-Klasse soll die UserId für den userName zurückgegeben werden
                     player.getIdPlayer(userName);
                     HttpSession session = request.getSession();
-                    session.setAttribute("player", player); // Playerobjekt wird in der Session gespeichert
+                    session.setAttribute("player", player); // und in der Session gespeichert werden
                     request.getRequestDispatcher("/WEB-INF/views/category.jsp").forward(request, response);
                     return;
             }

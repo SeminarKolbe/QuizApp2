@@ -33,7 +33,7 @@ public class DatenbankZugang {
      * 
      * @return Connection to database
      */
-    public Connection connect() {
+    public Connection connect() throws SQLException {
         try {
             Class.forName(JDBC_TREIBER);            
             con = DriverManager.getConnection(DB_URL);            
@@ -98,15 +98,15 @@ public class DatenbankZugang {
      return right;
     }
     // Gibt die Id eines User zurück. Der Username wird übergaben. Standermäßig wird -1 zurückgeliefert, falls der user nicht im System ist
-    public int getUserId(String username) throws ClassNotFoundException, SQLException{
+    public int getFirstInt(String query) throws SQLException{
         int id=-1;
         connect();
         Statement stmt= con.createStatement();
-        ResultSet rs = stmt.executeQuery("SELECT id_benutzer FROM benutzer WHERE name ='"+username+"';");
+        ResultSet rs = stmt.executeQuery(query);
         if(rs.next()){
-            id=rs.getInt("id_benutzer");    
+            id=rs.getInt(1);    
         }
-         close();
+        close();
         return id;
     }
     // Gibt eine Liste mit allen aktiven themen zurück

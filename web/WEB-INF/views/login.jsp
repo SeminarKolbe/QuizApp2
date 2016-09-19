@@ -25,7 +25,7 @@
             </form>           
         
         
-        <img src="http://mob164.projektserver3.as.wiwi.uni-goettingen.de:8080/logo5.jpg">
+        <img src="Bilder/logo.JPG">
         </div>
         <!--*****Ende Login Interface -->
         <div data-role="footer" data-theme="c" id="footer"><h1></h1></div>

@@ -17,7 +17,7 @@ import java.util.List;
  */
 public class Player extends DatenbankZugang {
     private String name = null;
-    private int user_id =1;
+    private int user_id;
     private List<ResultSet> set  =new ArrayList<ResultSet>(); 
     private int id;
     private int points;
@@ -26,13 +26,10 @@ public class Player extends DatenbankZugang {
         return points;
     }
     
-    public int getId() {
-        return id;
-    }
-    
     public Player(String name, int points){
         this.name=name;
         this.points=points;
+        user_id = geIdPlayer(this.name);
     }
     
     public Player(String name) throws ClassNotFoundException, SQLException{
@@ -74,18 +71,10 @@ public class Player extends DatenbankZugang {
             return set;     
         }
       
-      public void getIdPlayer(String name) throws ClassNotFoundException, SQLException{
-          connect();
-          Statement stmt= con.createStatement();
-          
-          ResultSet rs = stmt.executeQuery("SELECT id_benutzer FROM benutzer WHERE name='"+name+"'");         
-          int h=-1;
-         
-          if(rs.next())
-              h= rs.getInt(1);
-          this.id=h;
-         
-          
+        public int getIdPlayer(String name) throws ClassNotFoundException, SQLException{
+            String query = "SELECT id_benutzer FROM benutzer WHERE name='"+name+"';";
+            this.user_id = getInt(query);
+            return user_id;
         }
       
       
