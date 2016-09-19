@@ -1,0 +1,28 @@
+<%-- 
+    Document   : AusgabeSinglePlayer
+    Created on : 16.06.2016, 18:35:20
+    Author     : Jonas
+--%>
+
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>JSP Page</title>
+    </head>
+    <body>
+        <% String question = (String)request.getAttribute("question");%>
+        <% String answer = (String)request.getAttribute("answer");%>
+        <h1>Ausgabe</h1>
+        <p><%
+        out.println(question);
+        out.println(answer);
+        %></p>
+        
+                <button>Antwort anzeigen</button>
+            <form action="VerarbeitungsControllerSingle" method="post">
+                <button class="ui-btn ui-corner-all" >Nächste Frage</button>
+            </form>       
+    </body>
+</html>

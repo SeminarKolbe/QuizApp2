@@ -1,0 +1,38 @@
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css" />
+        <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+        <script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+        <title>Kategorieauswahl</title>
+        <link rel="stylesheet" href="stylesheet.css" type="text/css"/>
+    </head>
+    <body>
+        <div data-role="page">
+            <div data-role="header" data-theme="a" id="header"><h1>Name der App</h1></div>
+            <h1>Hallo ${userName} und viel Erfolg beim Lernen!</h1>
+
+            <!--Falls Kategorie ungültig oder falsch gewählt folgt eine Fehlermeldung -->
+            <h2><font color="red">${errorMessage}</font></h2>
+            <!-------------------------------->
+
+            <p>Wähle eine Kategorie</p>
+
+            <div id="kategorieauswahl">
+                <a href="ControllerCategory?category=1"> 
+                    <img src="http://mob164.projektserver3.as.wiwi.uni-goettingen.de:8080/mathe.jpg" alt="Mathe" width="350" height="350" name="Mathe"/>
+                </a>
+                <a href="ControllerCategory?category=2">  
+                    <img src="http://mob164.projektserver3.as.wiwi.uni-goettingen.de:8080/geschichte.jpg" alt="Geschichte" width="350" height="350"name="Geschichte" />
+                </a>  
+                <a href="ControllerCategory?category=3">
+                    <img src="http://mob164.projektserver3.as.wiwi.uni-goettingen.de:8080/englisch.jpg" alt="Englisch" width="350" height="350" name="Englisch" />
+                </a>
+            </div>
+            
+            <div data-role="footer" data-theme="a" id="footer"><h1></h1></div>
+        </div>
+    </body>
+</html>

@@ -1,0 +1,41 @@
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css" />
+        <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+        <script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+        <title>Spielmodus</title>
+        <link rel="stylesheet" href="stylesheet.css" type="text/css"/>
+    </head>
+    <body>
+        <div data-role="page">
+            <div data-role="header" data-theme="a" id="header"><h1>Name der App</h1></div>
+            <h2>Wähle deinen Spielmodus:</h2>
+            
+            <a href="ControllerCategory">
+                <button class="ui-btn ui-btn-inline">Zurück zur Themenauswahl</button>
+         
+            </a>
+            
+            <a href="ControllerCategory?category=3"> 
+                <img src="http://mob164.projektserver3.as.wiwi.uni-goettingen.de:8080/Einzelspieler.jpg" alt="Einzelspieler" width="250" height="250" name="Einzelspieler"/>
+            </a>
+            
+            <a href="ControllerCategory?category=2"> 
+                <img src="http://mob164.projektserver3.as.wiwi.uni-goettingen.de:8080/Mehrspieler.png" alt="Mehrspieler" width="250" height="250" name="Mehrspieler"/>
+            </a>
+            
+            <a href="ControllerCategory?category=0"> 
+                <img src="/WEB-INF/views/Bilder/Ranking.jpg" alt="Ranking" width="250" height="250" name="Ranking"/>
+            </a>
+            
+            <a href="ControllerCategory?category=0"> 
+                <img src="/WEB-INF/views/Bilder/Statistik.jpg" alt="Statistik" width="250" height="250" name="Statistik"/>
+            </a>
+
+            <div data-role="footer" data-theme="a" id="footer"><h1></h1></div>
+        </div>
+    </body>
+</html>
